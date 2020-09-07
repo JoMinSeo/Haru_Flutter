@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 const kMedium = TextStyle(fontFamily: "ITC");
 const kBold = TextStyle(fontFamily: "ITC", fontWeight: FontWeight.w700);
-const kExtraLight = TextStyle(fontFamily: "ITC", fontWeight: FontWeight.w300);
+const kExtraLight = TextStyle(fontFamily: "ITC", fontWeight: FontWeight.w100);
 const kBook = TextStyle(fontFamily: "ITC", fontWeight: FontWeight.w500);
 
 const kYellow = Color(0xFFFFC262);

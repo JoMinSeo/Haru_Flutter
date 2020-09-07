@@ -36,14 +36,14 @@ flutter:
   fonts:
     - family: ITC
       fonts:
-        - asset: fonts/ITC Avant Garde Gothic LT Medium.ttf
-        - asset: fonts/ITC Avant Garde Gothic LT Bold.ttf
+        - asset: assets/fonts/ITC Avant Garde Gothic LT Medium.ttf
+        - asset: assets/fonts/ITC Avant Garde Gothic LT Bold.ttf
           weight: 700
-        - asset: fonts/ITC Avant Garde Gothic LT Book.ttf
+        - asset: assets/fonts/ITC Avant Garde Gothic LT Book.ttf
           weight: 500
-        - asset: fonts/ITC Avant Garde Gothic LT Extra Light.ttf
+        - asset: assets/fonts/ITC Avant Garde Gothic LT Extra Light.ttf
           weight: 300
     - family: NaNum
       fonts:
-        - asset: fonts/nanum_squarel.ttf
+        - asset: assets/fonts/nanum_squarel.ttf
 
