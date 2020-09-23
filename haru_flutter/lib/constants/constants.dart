@@ -9,3 +9,6 @@ const kYellow = Color(0xFFFFC262);
 const kPink = Color(0xFFFF6C6C);
 const kPurple = Color(0xFF633CAE);
 const kRed = Color(0xFFFF000C);
+const kWhite = Color(0xFFFFFFFF);
+const kBlack = Color(0xFF000000);
+const kGrey = Color(0xFFBFBFBF);
