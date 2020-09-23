@@ -33,7 +33,7 @@ class MainBody extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      "November",
+                      'September',
                       style: kBook.copyWith(fontSize: 36),
                     ),
                     Text(
