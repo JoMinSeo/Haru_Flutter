@@ -14,6 +14,10 @@ class MainBody extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final selectprovider = Provider.of<SelectDateProvider>(context);
+    
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      getCurrentDate(context);
+    });
 
     return Padding(
       padding: EdgeInsets.symmetric(
