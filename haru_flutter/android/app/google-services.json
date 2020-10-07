@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "858188079812",
+    "firebase_url": "https://haru-ff3d2.firebaseio.com",
+    "project_id": "haru-ff3d2",
+    "storage_bucket": "haru-ff3d2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:858188079812:android:215b172f685081c6631f91",
+        "android_client_info": {
+          "package_name": "com.minseo.haru_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "858188079812-apsrrscm9g1mkdqk7rnrrbhbau0568ef.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKoZYsxCTL3eyQAjW51mdFJtgiOEjaBcY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "858188079812-apsrrscm9g1mkdqk7rnrrbhbau0568ef.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

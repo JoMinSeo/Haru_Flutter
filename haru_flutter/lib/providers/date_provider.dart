@@ -5,6 +5,7 @@ class DateProvider extends ChangeNotifier{
   String get finalMonth => _finalMonth;
 
   set finalMonth(String val){
+
     _finalMonth = val;
     notifyListeners();
   }

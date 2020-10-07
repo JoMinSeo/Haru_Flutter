@@ -14,6 +14,7 @@ class MainBody extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final selectprovider = Provider.of<SelectDateProvider>(context);
+    final date = DateTime.now();
     
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getCurrentDate(context);
@@ -58,9 +59,9 @@ class MainBody extends StatelessWidget {
                 width: getProportionateScreenWidth(60),
                 height: getProportionateScreenHeight(120),
                 controller: _controller,
-                initialSelectedDate: DateTime.now(),
+                initialSelectedDate: date,
                 daysCount: DateTime.daysPerWeek,
-                selectionColor: kGrey,
+                selectionColor: kYellow,
                 selectedTextColor: kWhite,
                 monthTextStyle: kMedium,
                 dayTextStyle: kMedium,

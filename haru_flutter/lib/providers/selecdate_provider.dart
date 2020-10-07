@@ -5,7 +5,7 @@ class SelectDateProvider extends ChangeNotifier{
 
   set selectedValue(DateTime dateTime){
     _selectedValue = dateTime;
-    print(_selectedValue);
+    print("date: $_selectedValue");
     notifyListeners();
   }
 }

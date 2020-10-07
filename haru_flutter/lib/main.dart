@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:haru_flutter/providers/date_provider.dart';
 import 'package:haru_flutter/providers/selecdate_provider.dart';
+import 'package:haru_flutter/screens/Login/login_page.dart';
 import 'package:haru_flutter/screens/main/main_page.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: MainPage(),
+        home: LoginPage(),
       ),
     );
   }

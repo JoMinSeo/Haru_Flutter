@@ -21,6 +21,9 @@ dependencies:
   fab_circular_menu: ^1.0.0
   date_picker_timeline: ^1.2.1
   provider: ^4.3.2+1
+  firebase_auth: ^0.18.1+1
+  google_sign_in: ^4.5.4
+  firebase_core: ^0.5.0
 
 dev_dependencies:
   flutter_test:
@@ -46,7 +49,7 @@ flutter:
           weight: 500
         - asset: assets/fonts/ITC Avant Garde Gothic LT Extra Light.ttf
           weight: 300
-    - family: NaNum
+    - family: MontSerrat
       fonts:
-        - asset: assets/fonts/nanum_squarel.ttf
+        - asset: assets/fonts/Montserrat-Bold.ttf
 
