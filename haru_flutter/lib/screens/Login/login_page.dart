@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:haru_flutter/constants/constants.dart';
+import 'package:haru_flutter/providers/firebase_provider.dart';
 import 'package:haru_flutter/screens/main/main_page.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
+import 'package:provider/provider.dart';
 
 FirebaseAuth auth = FirebaseAuth.instance;
 GoogleSignIn googleSignIn = GoogleSignIn();
@@ -15,10 +17,25 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  FirebaseProvider firebaseProvider;
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    firebaseProvider = Provider.of<FirebaseProvider>(context);
+
     SizeConfig().init(context);
     return Scaffold(
+      key: _scaffoldKey,
       body: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: getProportionateScreenWidth(30),
@@ -42,10 +59,30 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void _signInWithGoogle() async {
+    _scaffoldKey.currentState
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(
+        duration: Duration(seconds: 10),
+        content: Row(
+          children: <Widget>[
+            CircularProgressIndicator(),
+            Text("   Signing-In...")
+          ],
+        ),
+      ));
+    bool result = await firebaseProvider.signInWithGoogleAccount();
+    _scaffoldKey.currentState.hideCurrentSnackBar();
+    if (result == false) showLastFBMessage();
+  }
+
   Widget _signInButton() {
     return OutlineButton(
       splashColor: kGrey,
-      onPressed: () => StatefulWidget.of(context).si,
+      onPressed: () {
+        FocusScope.of(context).requestFocus(new FocusNode()); // 키보드 감춤
+        _signInWithGoogle();
+      },
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
       ),
@@ -94,5 +131,20 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  showLastFBMessage() {
+    _scaffoldKey.currentState
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(
+        backgroundColor: Colors.red[400],
+        duration: Duration(seconds: 10),
+        content: Text(firebaseProvider.getLastFBMessage()),
+        action: SnackBarAction(
+          label: "Done",
+          textColor: Colors.white,
+          onPressed: () {},
+        ),
+      ));
   }
 }

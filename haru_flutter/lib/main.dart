@@ -1,5 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:haru_flutter/providers/date_provider.dart';
+import 'package:haru_flutter/providers/firebase_provider.dart';
 import 'package:haru_flutter/providers/selecdate_provider.dart';
 import 'package:haru_flutter/screens/Login/login_page.dart';
 import 'package:haru_flutter/screens/main/main_page.dart';
@@ -19,6 +21,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: SelectDateProvider(),
+        ),
+        ChangeNotifierProvider.value(
+          value: FirebaseProvider(),
         ),
       ],
       child: MaterialApp(
