@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:haru_flutter/components/circle_button.dart';
 import 'package:haru_flutter/constants/constants.dart';
 import 'package:haru_flutter/providers/date_provider.dart';
+import 'package:haru_flutter/providers/firebase_provider.dart';
 import 'package:haru_flutter/providers/selecdate_provider.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
@@ -13,6 +14,7 @@ class MainBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    final firebaseProvider = Provider.of<FirebaseProvider>(context);
     final selectprovider = Provider.of<SelectDateProvider>(context);
     final date = DateTime.now();
     
@@ -70,7 +72,8 @@ class MainBody extends StatelessWidget {
                  selectprovider.selectedValue = date;
                 },
               ),
-            )
+            ),
+            Text("${firebaseProvider.getUser()}")
           ],
         ),
       ),

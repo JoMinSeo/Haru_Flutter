@@ -60,22 +60,22 @@ class FirebaseProvider extends ChangeNotifier{
     setUser(null);
   }
 
-  // // 사용자에게 비밀번호 재설정 메일을 영어로 전송 시도
-  // sendPasswordResetEmailByEnglish() async {
-  //   await fAuth.setLanguageCode("en");
-  //   sendPasswordResetEmail();
-  // }
-  //
-  // // 사용자에게 비밀번호 재설정 메일을 한글로 전송 시도
-  // sendPasswordResetEmailByKorean() async {
-  //   await fAuth.setLanguageCode("ko");
-  //   sendPasswordResetEmail();
-  // }
-  //
-  // // 사용자에게 비밀번호 재설정 메일을 전송
-  // sendPasswordResetEmail() async {
-  //   fAuth.sendPasswordResetEmail(email: getUser().email);
-  // }
+  // 사용자에게 비밀번호 재설정 메일을 영어로 전송 시도
+  sendPasswordResetEmailByEnglish() async {
+    await fAuth.setLanguageCode("en");
+    sendPasswordResetEmail();
+  }
+
+  // 사용자에게 비밀번호 재설정 메일을 한글로 전송 시도
+  sendPasswordResetEmailByKorean() async {
+    await fAuth.setLanguageCode("ko");
+    sendPasswordResetEmail();
+  }
+
+  // 사용자에게 비밀번호 재설정 메일을 전송
+  sendPasswordResetEmail() async {
+    fAuth.sendPasswordResetEmail(email: getUser().email);
+  }
 
   // Firebase로부터 회원 탈퇴
   withdrawalAccount() async {

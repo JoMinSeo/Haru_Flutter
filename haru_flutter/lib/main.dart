@@ -7,7 +7,9 @@ import 'package:haru_flutter/screens/Login/login_page.dart';
 import 'package:haru_flutter/screens/main/main_page.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
