@@ -17,9 +17,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  //FirebaseProvider firebaseProvider;
-  //bool doRemember;
-
   GoogleSignIn _googleSignIn = GoogleSignIn();
   FirebaseAuth _auth;
 
@@ -71,27 +68,35 @@ class _LoginPageState extends State<LoginPage> {
               ),
               Align(
                 alignment: Alignment.center,
-                child: FlatButton(
+                child: OutlineButton(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   onPressed: () {
                     onGoogleSignIn(context);
                   },
-                  color: isUserSignedIn ? Colors.green : Colors.blueAccent,
+                  borderSide: BorderSide(color: isUserSignedIn ? kPurple : kPink),
                   child: Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.symmetric(
+                        vertical: getProportionateScreenHeight(12),
+                        horizontal: getProportionateScreenWidth(20)),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(Icons.account_circle, color: Colors.white),
-                        SizedBox(width: 10),
-                        Text(
-                            isUserSignedIn
-                                ? 'You\'re logged in with Google'
-                                : 'Login with Google',
-                            style: TextStyle(color: Colors.white))
+                      children: [
+                        Image(
+                          image: AssetImage("assets/images/google.png"),
+                          height: getProportionateScreenHeight(36.0),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: getProportionateScreenWidth(10)),
+                          child: Text(
+                            isUserSignedIn ? "login complete" : "Sign in with Google",
+                            style:
+                                kMont.copyWith(fontSize: 16, color: kBlackGrey),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -137,54 +142,15 @@ class _LoginPageState extends State<LoginPage> {
 
   void onGoogleSignIn(BuildContext context) async {
     User user = await _handleSignIn();
-    var userSignedIn = await Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => WelcomeUserWidget(user, _googleSignIn)),
-    );
+    var userSignedIn = await _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("로그인 성공"),));
 
     setState(() {
       isUserSignedIn = userSignedIn == null ? true : false;
     });
   }
 
-  // Widget _signInButton() {
-  //   return OutlineButton(
-  //     splashColor: kGrey,
-  //     onPressed: () {
-  //       FocusScope.of(context).requestFocus(new FocusNode()); // 키보드 감춤
-  //       _signInWithGoogle();
-  //     },
-  //     shape: RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.circular(8),
-  //     ),
-  //     borderSide: BorderSide(color: kBlack),
-  //     child: Padding(
-  //       padding: EdgeInsets.symmetric(
-  //           vertical: getProportionateScreenHeight(12),
-  //           horizontal: getProportionateScreenWidth(20)),
-  //       child: Row(
-  //         mainAxisSize: MainAxisSize.min,
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           Image(
-  //             image: AssetImage("assets/images/google.png"),
-  //             height: getProportionateScreenHeight(36.0),
-  //           ),
-  //           Padding(
-  //             padding: EdgeInsets.only(left: getProportionateScreenWidth(10)),
-  //             child: Text(
-  //               "Sign in with Google",
-  //               style: kMont.copyWith(fontSize: 16, color: kBlackGrey),
-  //             ),
-  //           )
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget loginSuccessButton() {
+
     return ButtonTheme(
       minWidth: SizeConfig.screenWidth,
       height: getProportionateScreenHeight(68),
@@ -201,74 +167,27 @@ class _LoginPageState extends State<LoginPage> {
           onPressed: () {
             isUserSignedIn == true
                 ? Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MainPage()))
-                : Scaffold.of(context)
-                    .showSnackBar(SnackBar(content: Text("로그인해 시발럼아")));
+                    MaterialPageRoute(builder: (context) => MainPage(user, _googleSignIn)))
+                : _scaffoldKey.currentState.showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        "로그인이 안되어있어요",
+                        style: kMedium.copyWith(fontSize: 16),
+                      ),
+                      elevation: 0.5,
+                      backgroundColor: kPurple,
+                      duration: Duration(milliseconds: 2000),
+                      action: SnackBarAction(
+                        label: "확인",
+                        textColor: kGrey,
+                        disabledTextColor: kWhite,
+                        onPressed: () {
+                          print("snackBar Action Clicked");
+                        },
+                      ),
+                    ),
+                  );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class WelcomeUserWidget extends StatelessWidget {
-  GoogleSignIn _googleSignIn;
-  User _user;
-
-  WelcomeUserWidget(User user, GoogleSignIn signIn) {
-    _user = user;
-    _googleSignIn = signIn;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
-        elevation: 0,
-      ),
-      body: Container(
-        color: Colors.white,
-        padding: EdgeInsets.all(50),
-        child: Align(
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ClipOval(
-                  child: Image.network(_user.photoURL,
-                      width: 100, height: 100, fit: BoxFit.cover)),
-              SizedBox(height: 20),
-              Text('Welcome,', textAlign: TextAlign.center),
-              Text(_user.displayName,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
-              SizedBox(height: 20),
-              FlatButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  onPressed: () {
-                    _googleSignIn.signOut();
-                    print("로그아웃");
-                    Navigator.pop(context, false);
-                  },
-                  color: Colors.redAccent,
-                  child: Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(Icons.exit_to_app, color: Colors.white),
-                          SizedBox(width: 10),
-                          Text('Log out of Google',
-                              style: TextStyle(color: Colors.white))
-                        ],
-                      )))
-            ],
-          ),
         ),
       ),
     );

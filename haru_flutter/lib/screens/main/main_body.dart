@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:haru_flutter/components/circle_button.dart';
 import 'package:haru_flutter/constants/constants.dart';
 import 'package:haru_flutter/providers/date_provider.dart';
@@ -11,10 +13,15 @@ import 'package:provider/provider.dart';
 class MainBody extends StatelessWidget {
   DatePickerController _controller = DatePickerController();
 
+  GoogleSignIn _googleSignIn;
+  User _user;
+
+  MainBody(User user, GoogleSignIn signIn) {
+    _user = user;
+    _googleSignIn = signIn;
+  }
   @override
   Widget build(BuildContext context) {
-
-    final firebaseProvider = Provider.of<FirebaseProvider>(context);
     final selectprovider = Provider.of<SelectDateProvider>(context);
     final date = DateTime.now();
     
@@ -73,7 +80,7 @@ class MainBody extends StatelessWidget {
                 },
               ),
             ),
-            Text("${firebaseProvider.getUser()}")
+            Text("$_user")
           ],
         ),
       ),
