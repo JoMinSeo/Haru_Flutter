@@ -6,6 +6,7 @@ import 'package:haru_flutter/constants/constants.dart';
 import 'package:haru_flutter/providers/date_provider.dart';
 import 'package:haru_flutter/providers/firebase_provider.dart';
 import 'package:haru_flutter/providers/selecdate_provider.dart';
+import 'package:haru_flutter/screens/logout/logout_page.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:provider/provider.dart';
@@ -13,16 +14,10 @@ import 'package:provider/provider.dart';
 class MainBody extends StatelessWidget {
   DatePickerController _controller = DatePickerController();
 
-  GoogleSignIn _googleSignIn;
-  User _user;
-
-  MainBody(User user, GoogleSignIn signIn) {
-    _user = user;
-    _googleSignIn = signIn;
-  }
   @override
   Widget build(BuildContext context) {
-    final selectprovider = Provider.of<SelectDateProvider>(context);
+    final selectProvider = Provider.of<SelectDateProvider>(context);
+    final firebaseProvider = Provider.of<FirebaseProvider>(context);
     final date = DateTime.now();
     
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -45,9 +40,20 @@ class MainBody extends StatelessWidget {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          date.finalMonth,
-                          style: kBook.copyWith(fontSize: 36),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              date.finalMonth,
+                              style: kBook.copyWith(fontSize: 36),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.settings),
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => LogoutPage(firebaseProvider.auth.currentUser, firebaseProvider.googleSignIn)));
+                              },
+                            )
+                          ],
                         ),
                         Text(
                           'Today',
@@ -76,11 +82,11 @@ class MainBody extends StatelessWidget {
                 dayTextStyle: kMedium,
                 dateTextStyle: kMedium.copyWith(fontSize: 28),
                 onDateChange: (date) {
-                 selectprovider.selectedValue = date;
+                 selectProvider.selectedValue = date;
                 },
               ),
             ),
-            Text("$_user")
+            Text("${firebaseProvider.user}")
           ],
         ),
       ),

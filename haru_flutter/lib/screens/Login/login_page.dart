@@ -3,11 +3,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:haru_flutter/constants/constants.dart';
+import 'package:haru_flutter/providers/firebase_provider.dart';
+import 'package:haru_flutter/screens/logout/logout_page.dart';
 import 'package:haru_flutter/screens/main/main_page.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
-
-FirebaseAuth auth = FirebaseAuth.instance;
-GoogleSignIn googleSignIn = GoogleSignIn();
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -17,10 +17,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  GoogleSignIn _googleSignIn = GoogleSignIn();
-  FirebaseAuth _auth;
-
-  bool isUserSignedIn = false;
+  FirebaseProvider firebaseProvider;
 
   @override
   void dispose() {
@@ -35,20 +32,19 @@ class _LoginPageState extends State<LoginPage> {
 
   void initApp() async {
     FirebaseApp defaultApp = await Firebase.initializeApp();
-    _auth = FirebaseAuth.instanceFor(app: defaultApp);
+    firebaseProvider.auth = FirebaseAuth.instanceFor(app: defaultApp);
     checkIfUserIsSignedIn();
   }
 
   void checkIfUserIsSignedIn() async {
-    var userSignedIn = await _googleSignIn.isSignedIn();
-
-    setState(() {
-      isUserSignedIn = userSignedIn;
-    });
+    var userSignedIn = await firebaseProvider.googleSignIn.isSignedIn();
+    firebaseProvider.isUserSignedIn = userSignedIn;
   }
 
   @override
   Widget build(BuildContext context) {
+    firebaseProvider = Provider.of<FirebaseProvider>(context, listen: false);
+
     SizeConfig().init(context);
     return Scaffold(
       key: _scaffoldKey,
@@ -56,101 +52,78 @@ class _LoginPageState extends State<LoginPage> {
         padding: EdgeInsets.symmetric(
           horizontal: getProportionateScreenWidth(30),
         ),
-        child: Container(
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Text(
-                "Haru",
-                style: kBold.copyWith(fontSize: 42),
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: OutlineButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+        child: Consumer<FirebaseProvider>(
+          builder: (ctx, item, _){
+            final boolSign = item.isUserSignedIn;
+            return Container(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text(
+                    "Haru",
+                    style: kBold.copyWith(fontSize: 42),
                   ),
-                  onPressed: () {
-                    onGoogleSignIn(context);
-                  },
-                  borderSide: BorderSide(color: isUserSignedIn ? kPurple : kPink),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: getProportionateScreenHeight(12),
-                        horizontal: getProportionateScreenWidth(20)),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image(
-                          image: AssetImage("assets/images/google.png"),
-                          height: getProportionateScreenHeight(36.0),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: getProportionateScreenWidth(10)),
-                          child: Text(
-                            isUserSignedIn ? "login complete" : "Sign in with Google",
-                            style:
+                  Align(
+                    alignment: Alignment.center,
+                    child: OutlineButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      onPressed: () {
+                        print("눌렀습니다.");
+                        onGoogleSignIn(context);
+                      },
+                      borderSide: BorderSide(
+                          color: boolSign ? kPurple : kPink),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: getProportionateScreenHeight(12),
+                            horizontal: getProportionateScreenWidth(20)),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image(
+                              image: AssetImage("assets/images/google.png"),
+                              height: getProportionateScreenHeight(36.0),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: getProportionateScreenWidth(10)),
+                              child: Text(
+                                boolSign
+                                    ? "login complete"
+                                    : "Sign in with Google",
+                                style:
                                 kMont.copyWith(fontSize: 16, color: kBlackGrey),
-                          ),
-                        )
-                      ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  loginSuccessButton(),
+                ],
               ),
-              loginSuccessButton(),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
   }
 
-  Future<User> _handleSignIn() async {
-    User user;
-    bool userSignedIn = await _googleSignIn.isSignedIn();
-
-    setState(() {
-      isUserSignedIn = userSignedIn;
-    });
-
-    if (isUserSignedIn) {
-      user = _auth.currentUser;
-    } else {
-      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      user = (await _auth.signInWithCredential(credential)).user;
-      userSignedIn = await _googleSignIn.isSignedIn();
-      setState(() {
-        isUserSignedIn = userSignedIn;
-      });
-    }
-
-    return user;
-  }
-
   void onGoogleSignIn(BuildContext context) async {
-    User user = await _handleSignIn();
-    var userSignedIn = await _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("로그인 성공"),));
+    User userLogin = await firebaseProvider.signInWithGoogleAccount();
+    print("유저로그인 + $userLogin");
 
-    setState(() {
-      isUserSignedIn = userSignedIn == null ? true : false;
-    });
+    firebaseProvider.isUserSignedIn = userLogin == null ? false : true;
+    print("${firebaseProvider.isUserSignedIn} 로그인버튼 눌렀을때용");
   }
 
   Widget loginSuccessButton() {
-
     return ButtonTheme(
       minWidth: SizeConfig.screenWidth,
       height: getProportionateScreenHeight(68),
@@ -165,9 +138,9 @@ class _LoginPageState extends State<LoginPage> {
             style: kMedium.copyWith(fontSize: 24, color: Colors.white),
           ),
           onPressed: () {
-            isUserSignedIn == true
+            firebaseProvider.isUserSignedIn == true
                 ? Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MainPage(user, _googleSignIn)))
+                    MaterialPageRoute(builder: (context) => MainPage()))
                 : _scaffoldKey.currentState.showSnackBar(
                     SnackBar(
                       content: Text(

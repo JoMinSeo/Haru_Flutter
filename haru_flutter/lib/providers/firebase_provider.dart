@@ -5,93 +5,97 @@ import 'package:logger/logger.dart';
 
 Logger logger = Logger();
 
-class FirebaseProvider extends ChangeNotifier{
-  final FirebaseAuth fAuth = FirebaseAuth.instance; // Firebase 인증 플러그인의 인스턴스
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+class FirebaseProvider extends ChangeNotifier {
+  GoogleSignIn googleSignIn = GoogleSignIn();
+  FirebaseAuth auth;
+  bool _isUserSignedIn = false;
 
-  FirebaseUser _user; // Firebase에 로그인 된 사용자
+  User _user; // Firebase에 로그인 된 사용자
 
-  String _lastFirebaseResponse = ""; // Firebase로부터 받은 최신 메시지(에러 처리용)
+  User get user => _user;
 
-  FirebaseUser getUser() {
-    return _user;
-  }
-
-  void setUser(FirebaseUser value) {
+  set user(User value) {
     _user = value;
     notifyListeners();
   }
 
-  // 최근 Firebase에 로그인한 사용자의 정보 획득
-  _prepareUser() {
-     _user = fAuth.currentUser;
+  bool get isUserSignedIn => _isUserSignedIn;
+
+  set isUserSignedIn(bool isUserSignedIn){
+    _isUserSignedIn = isUserSignedIn;
+    print("값이 이렇게 설정 되었어요 + $isUserSignedIn");
+    notifyListeners();
   }
 
-  // 구글 계정을 이용하여 Firebase에 로그인
-  Future<bool> signInWithGoogleAccount() async {
-    try {
-      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
-      final AuthCredential credential = GoogleAuthProvider.getCredential(
-          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-      final FirebaseUser user =
-          (await fAuth.signInWithCredential(credential)).user;
-      assert(user.email != null);
-      assert(user.displayName != null);
-      assert(!user.isAnonymous);
-      assert(await user.getIdToken() != null);
+  // // 최근 Firebase에 로그인한 사용자의 정보 획득
+  // _prepareUser() {
+  //   _user = _auth.currentUser;
+  // }
 
-      final FirebaseUser currentUser = await fAuth.currentUser;
-      assert(user.uid == currentUser.uid);
-      setUser(user);
-      return true;
-    } on Exception catch (e) {
-      logger.e(e.toString());
-      List<String> result = e.toString().split(", ");
-      setLastFBMessage(result[1]);
-      return false;
+  // 구글 계정을 이용하여 Firebase에 로그인
+  Future<User> signInWithGoogleAccount() async {
+    // try {
+    bool userSignedIn = await googleSignIn.isSignedIn();
+    print("로그인상태는 $userSignedIn");
+    print("$user");
+    isUserSignedIn = userSignedIn;
+
+    if (isUserSignedIn) {
+      print("데이터는 $isUserSignedIn입니다.");
+      user = auth.currentUser;
+      print("처리후 유저 : $user");
+    } else {
+      final GoogleSignInAccount googleUser = await googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      user = (await auth.signInWithCredential(credential)).user;
+      userSignedIn = await googleSignIn.isSignedIn();
+      isUserSignedIn = userSignedIn;
+      print(isUserSignedIn);
     }
+    // } on Exception catch (e) {
+    //   logger.e(e.toString());
+    //   List<String> result = e.toString().split(", ");
+    //   return null;
+    // }
+    notifyListeners();
+    return user;
   }
 
   // Firebase로부터 로그아웃
   signOut() async {
-    await fAuth.signOut();
-    setUser(null);
+    await auth.signOut();
+    user = null;
+    isUserSignedIn = false;
   }
 
   // 사용자에게 비밀번호 재설정 메일을 영어로 전송 시도
   sendPasswordResetEmailByEnglish() async {
-    await fAuth.setLanguageCode("en");
+    await auth.setLanguageCode("en");
     sendPasswordResetEmail();
   }
 
   // 사용자에게 비밀번호 재설정 메일을 한글로 전송 시도
   sendPasswordResetEmailByKorean() async {
-    await fAuth.setLanguageCode("ko");
+    await auth.setLanguageCode("ko");
     sendPasswordResetEmail();
   }
 
   // 사용자에게 비밀번호 재설정 메일을 전송
   sendPasswordResetEmail() async {
-    fAuth.sendPasswordResetEmail(email: getUser().email);
+    auth.sendPasswordResetEmail(email: user.email);
   }
 
   // Firebase로부터 회원 탈퇴
   withdrawalAccount() async {
-    await getUser().delete();
-    setUser(null);
-  }
-
-  // Firebase로부터 수신한 메시지 설정
-  setLastFBMessage(String msg) {
-    _lastFirebaseResponse = msg;
-  }
-
-  // Firebase로부터 수신한 메시지를 반환하고 삭제
-  getLastFBMessage() {
-    String returnValue = _lastFirebaseResponse;
-    _lastFirebaseResponse = null;
-    return returnValue;
+    await user.delete();
+    user = null;
+    isUserSignedIn = false;
   }
 }

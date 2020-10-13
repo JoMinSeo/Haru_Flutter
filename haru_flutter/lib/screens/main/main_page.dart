@@ -10,14 +10,6 @@ import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
 class MainPage extends StatelessWidget {
   final GlobalKey<FabCircularMenuState> fabKey = GlobalKey();
 
-  GoogleSignIn _googleSignIn;
-  User _user;
-
-  MainPage(User user, GoogleSignIn signIn) {
-    _user = user;
-    _googleSignIn = signIn;
-  }
-
   @override
   Widget build(BuildContext context) {
 
@@ -25,7 +17,7 @@ class MainPage extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
-      body: MainBody(_user, _googleSignIn),
+      body: MainBody(),
       floatingActionButton: Builder(
         builder: (context) => FabCircularMenu(
           key: fabKey,

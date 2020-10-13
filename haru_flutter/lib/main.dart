@@ -4,10 +4,11 @@ import 'package:haru_flutter/providers/date_provider.dart';
 import 'package:haru_flutter/providers/firebase_provider.dart';
 import 'package:haru_flutter/providers/selecdate_provider.dart';
 import 'package:haru_flutter/screens/Login/login_page.dart';
+import 'package:haru_flutter/screens/logout/logout_page.dart';
 import 'package:haru_flutter/screens/main/main_page.dart';
 import 'package:provider/provider.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
@@ -35,7 +36,11 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: LoginPage(),
+        initialRoute: '/',
+        routes: {
+          '/': (BuildContext context) => LoginPage(),
+          '/mainPage': (BuildContext context) => MainPage(),
+        },
       ),
     );
   }

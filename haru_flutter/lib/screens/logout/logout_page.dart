@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:haru_flutter/constants/constants.dart';
+import 'package:haru_flutter/screens/Login/login_page.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
 
 class LogoutPage extends StatelessWidget {
@@ -45,7 +46,7 @@ class LogoutPage extends StatelessWidget {
                 onPressed: () {
                   _googleSignIn.signOut();
                   print("로그아웃");
-                  Navigator.pop(context, false);
+                  Navigator.popAndPushNamed(context, "/");
                 },
                 borderSide: BorderSide(color: kRed),
                 child: Padding(
