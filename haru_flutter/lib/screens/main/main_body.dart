@@ -1,27 +1,111 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:haru_flutter/components/circle_button.dart';
 import 'package:haru_flutter/constants/constants.dart';
+import 'package:haru_flutter/models/model_schedule.dart';
 import 'package:haru_flutter/providers/date_provider.dart';
-import 'package:haru_flutter/providers/firebase_provider.dart';
 import 'package:haru_flutter/providers/selecdate_provider.dart';
-import 'package:haru_flutter/screens/logout/logout_page.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:provider/provider.dart';
 
 class MainBody extends StatelessWidget {
   DatePickerController _controller = DatePickerController();
+  FirebaseFirestore firebaseStore = FirebaseFirestore.instance;
+  Stream<QuerySnapshot> streamData;
+
+  Widget _fetchData(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('schedule').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          return _buildList(context, snapshot.data.docs);
+        }
+      },
+    );
+  }
+
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+    List<Schedule> schedule =
+        snapshot.map((d) => Schedule.fromSnapshot(d)).toList();
+    print("큰 스케쥴 $schedule");
+    return Expanded(
+      child: ListView.builder(
+        itemCount: schedule.length,
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return bigListItem(context, snapshot[index]);
+          } else if (index == 1) {
+            return Text("2");
+          }
+          return Text("3");
+        },
+      ),
+    );
+  }
+
+  Widget bigListItem(BuildContext context, DocumentSnapshot data) {
+    final schedule = Schedule.fromSnapshot(data);
+    print("스케쥴 : $schedule");
+    return InkWell(
+      child: Container(
+          height: getProportionateScreenHeight(120),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15), color: kPurple),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: getProportionateScreenWidth(20),
+                vertical: getProportionateScreenHeight(10)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  schedule.title,
+                  style: kMedium.copyWith(color: kWhite, fontSize: 20),
+                ),
+                Text(
+                  schedule.content,
+                  style: kMedium.copyWith(color: kWhite, fontSize: 12),
+                ),
+              ],
+            ),
+          )),
+    );
+  }
+
+  Widget smallListItem(BuildContext context, DocumentSnapshot data) {
+    final schedule = Schedule.fromSnapshot(data);
+    print("스케쥴 : $schedule");
+    return InkWell(
+      child: Container(
+          height: getProportionateScreenHeight(50),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: kPurple,
+            boxShadow: [
+              BoxShadow(
+                color: kGrey.withOpacity(0.5),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Text(schedule.timestamp.toString())),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final selectProvider = Provider.of<SelectDateProvider>(context);
-    final firebaseProvider = Provider.of<FirebaseProvider>(context);
     final date = DateTime.now();
-    
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getCurrentDate(context);
+      _fetchData(context);
     });
 
     return Padding(
@@ -36,24 +120,13 @@ class MainBody extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Consumer<DateProvider>(
-                  builder: (ctx, date, _){
+                  builder: (ctx, date, _) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(
-                              date.finalMonth,
-                              style: kBook.copyWith(fontSize: 36),
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.settings),
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => LogoutPage(firebaseProvider.auth.currentUser, firebaseProvider.googleSignIn)));
-                              },
-                            )
-                          ],
+                        Text(
+                          date.finalMonth,
+                          style: kBook.copyWith(fontSize: 36),
                         ),
                         Text(
                           'Today',
@@ -82,27 +155,29 @@ class MainBody extends StatelessWidget {
                 dayTextStyle: kMedium,
                 dateTextStyle: kMedium.copyWith(fontSize: 28),
                 onDateChange: (date) {
-                 selectProvider.selectedValue = date;
+                  selectProvider.selectedValue = date;
                 },
               ),
             ),
-            Text("${firebaseProvider.user}")
+            _fetchData(context),
           ],
         ),
       ),
     );
   }
 
-   getCurrentDate(BuildContext context) {
+  getCurrentDate(BuildContext context) {
     var date = new DateTime.now().toString();
     var dateParse = DateTime.parse(date);
 
-    switch(dateParse.month){
+    switch (dateParse.month) {
       case 1:
-        Provider.of<DateProvider>(context, listen: false).finalMonth = "January";
+        Provider.of<DateProvider>(context, listen: false).finalMonth =
+            "January";
         break;
       case 2:
-        Provider.of<DateProvider>(context, listen: false).finalMonth = "February";
+        Provider.of<DateProvider>(context, listen: false).finalMonth =
+            "February";
         break;
       case 3:
         Provider.of<DateProvider>(context, listen: false).finalMonth = "March";
@@ -123,16 +198,20 @@ class MainBody extends StatelessWidget {
         Provider.of<DateProvider>(context, listen: false).finalMonth = "August";
         break;
       case 9:
-        Provider.of<DateProvider>(context, listen: false).finalMonth = "September";
+        Provider.of<DateProvider>(context, listen: false).finalMonth =
+            "September";
         break;
       case 10:
-        Provider.of<DateProvider>(context, listen: false).finalMonth = "October";
+        Provider.of<DateProvider>(context, listen: false).finalMonth =
+            "October";
         break;
       case 11:
-        Provider.of<DateProvider>(context, listen: false).finalMonth = "November";
+        Provider.of<DateProvider>(context, listen: false).finalMonth =
+            "November";
         break;
       case 12:
-        Provider.of<DateProvider>(context, listen: false).finalMonth = "December";
+        Provider.of<DateProvider>(context, listen: false).finalMonth =
+            "December";
         break;
       default:
         print("이상한데 씨발");

@@ -1,11 +1,11 @@
 import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:haru_flutter/constants/constants.dart';
-import 'package:haru_flutter/providers/firebase_provider.dart';
+import 'package:haru_flutter/screens/logout/logout_page.dart';
 import 'package:haru_flutter/screens/main/main_body.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatelessWidget {
   final GlobalKey<FabCircularMenuState> fabKey = GlobalKey();
@@ -42,7 +42,7 @@ class MainPage extends StatelessWidget {
               },
               shape: CircleBorder(),
               padding: const EdgeInsets.all(24.0),
-              child: Icon(Icons.looks_one, color: Colors.white),
+              child: Icon(Icons.add, color: Colors.white),
             ),
             RawMaterialButton(
               onPressed: () {
@@ -50,26 +50,26 @@ class MainPage extends StatelessWidget {
               },
               shape: CircleBorder(),
               padding: const EdgeInsets.all(24.0),
-              child: Icon(Icons.looks_two, color: Colors.white),
+              child: Icon(Icons.delete, color: Colors.white),
             ),
             RawMaterialButton(
               onPressed: () {
-                _showSnackBar(context, "You pressed 3");
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LogoutPage()));
               },
               shape: CircleBorder(),
               padding: const EdgeInsets.all(24.0),
-              child: Icon(Icons.looks_3, color: Colors.white),
+              child: Icon(Icons.settings, color: Colors.white),
             ),
-            RawMaterialButton(
-              onPressed: () {
-                _showSnackBar(
-                    context, "You pressed 4. This one closes the menu on tap");
-                fabKey.currentState.close();
-              },
-              shape: CircleBorder(),
-              padding: const EdgeInsets.all(24.0),
-              child: Icon(Icons.looks_4, color: Colors.white),
-            )
+            // RawMaterialButton(
+            //   onPressed: () {
+            //     _showSnackBar(
+            //         context, "You pressed 4. This one closes the menu on tap");
+            //     fabKey.currentState.close();
+            //   },
+            //   shape: CircleBorder(),
+            //   padding: const EdgeInsets.all(24.0),
+            //   child: Icon(Icons.looks_4, color: Colors.white),
+            // )
           ],
         ),
       ),

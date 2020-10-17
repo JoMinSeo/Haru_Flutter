@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
+const kTokenKey = "TOKEN_KEY";
+const kRTokenKey = "REF_TOKEN_KEY";
+
 const kMedium = TextStyle(fontFamily: "ITC");
 const kBold = TextStyle(fontFamily: "ITC", fontWeight: FontWeight.w700);
 const kExtraLight = TextStyle(fontFamily: "ITC", fontWeight: FontWeight.w100);

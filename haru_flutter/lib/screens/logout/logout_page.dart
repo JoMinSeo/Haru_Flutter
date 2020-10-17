@@ -2,17 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:haru_flutter/constants/constants.dart';
-import 'package:haru_flutter/screens/Login/login_page.dart';
+import 'package:haru_flutter/providers/firebase_login.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
 
 class LogoutPage extends StatelessWidget {
-  GoogleSignIn _googleSignIn;
-  User _user;
 
-  LogoutPage(User user, GoogleSignIn signIn) {
-    _user = user;
-    _googleSignIn = signIn;
-  }
+  final FirebaseLogin _auth = FirebaseLogin();
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +26,11 @@ class LogoutPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               ClipOval(
-                  child: Image.network(_user.photoURL,
+                  child: Image.network(_auth.image,
                       width: 100, height: 100, fit: BoxFit.cover)),
               SizedBox(height: 20),
               Text('Welcome,', textAlign: TextAlign.center),
-              Text(_user.displayName,
+              Text(_auth.name,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
               SizedBox(height: 20),
@@ -44,7 +39,8 @@ class LogoutPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 onPressed: () {
-                  _googleSignIn.signOut();
+                  _auth.signOut();
+                  _auth.logout();
                   print("로그아웃");
                   Navigator.popAndPushNamed(context, "/");
                 },

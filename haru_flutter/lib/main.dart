@@ -1,10 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:haru_flutter/providers/date_provider.dart';
-import 'package:haru_flutter/providers/firebase_provider.dart';
+import 'package:haru_flutter/providers/firebase_login.dart';
 import 'package:haru_flutter/providers/selecdate_provider.dart';
 import 'package:haru_flutter/screens/Login/login_page.dart';
-import 'package:haru_flutter/screens/logout/logout_page.dart';
 import 'package:haru_flutter/screens/main/main_page.dart';
 import 'package:provider/provider.dart';
 
@@ -25,9 +24,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: SelectDateProvider(),
         ),
-        ChangeNotifierProvider.value(
-          value: FirebaseProvider(),
-        ),
       ],
       child: MaterialApp(
         title: 'Haru',
@@ -38,10 +34,53 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (BuildContext context) => LoginPage(),
+          '/': (BuildContext context) => RoutePage(),
+          '/loginPage': (BuildContext context) => LoginPage(),
           '/mainPage': (BuildContext context) => MainPage(),
         },
       ),
     );
   }
 }
+
+class RoutePage extends StatefulWidget {
+  @override
+  _RoutePageState createState() => _RoutePageState();
+}
+
+class _RoutePageState extends State<RoutePage> {
+
+  FirebaseLogin _auth = FirebaseLogin();
+
+  @override
+  void initState() {
+    super.initState();
+    print("Init state");
+    _auth.autoLogin().then((value){
+      if(value == 'null')
+      {
+        print(_auth.isUserSignedIn);
+        setState(() {
+          _auth.isUserSignedIn = false;
+        });
+      }
+      else if(value !=null)
+      {
+        setState(() {
+          _auth.isUserSignedIn = true;
+        });
+      }
+      else{
+        setState(() {
+          _auth.isUserSignedIn = false;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _auth.isUserSignedIn == true ? MainPage() : LoginPage();
+  }
+}
+
