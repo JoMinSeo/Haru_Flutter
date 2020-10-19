@@ -2,6 +2,7 @@ import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:haru_flutter/constants/constants.dart';
+import 'package:haru_flutter/screens/add_schedule_page.dart';
 import 'package:haru_flutter/screens/logout/logout_page.dart';
 import 'package:haru_flutter/screens/main/main_body.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
@@ -12,7 +13,6 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     SizeConfig().init(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -39,6 +39,17 @@ class MainPage extends StatelessWidget {
             RawMaterialButton(
               onPressed: () {
                 _showSnackBar(context, "You pressed 1");
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (context) => SingleChildScrollView(
+                    child: Container(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                      child: AddSchedulePage(),
+                    ),
+                  ),
+                );
               },
               shape: CircleBorder(),
               padding: const EdgeInsets.all(24.0),
@@ -54,22 +65,13 @@ class MainPage extends StatelessWidget {
             ),
             RawMaterialButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => LogoutPage()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LogoutPage()));
               },
               shape: CircleBorder(),
               padding: const EdgeInsets.all(24.0),
               child: Icon(Icons.settings, color: Colors.white),
             ),
-            // RawMaterialButton(
-            //   onPressed: () {
-            //     _showSnackBar(
-            //         context, "You pressed 4. This one closes the menu on tap");
-            //     fabKey.currentState.close();
-            //   },
-            //   shape: CircleBorder(),
-            //   padding: const EdgeInsets.all(24.0),
-            //   child: Icon(Icons.looks_4, color: Colors.white),
-            // )
           ],
         ),
       ),

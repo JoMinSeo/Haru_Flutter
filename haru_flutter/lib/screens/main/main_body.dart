@@ -54,7 +54,17 @@ class MainBody extends StatelessWidget {
       child: Container(
           height: getProportionateScreenHeight(120),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15), color: kPurple),
+            borderRadius: BorderRadius.circular(15),
+            color: kPurple,
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x10000000),
+                offset: Offset(0, 0),
+                blurRadius: 6,
+                spreadRadius: 1,
+              ),
+            ],
+          ),
           child: Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: getProportionateScreenWidth(20),
@@ -87,10 +97,10 @@ class MainBody extends StatelessWidget {
             color: kPurple,
             boxShadow: [
               BoxShadow(
-                color: kGrey.withOpacity(0.5),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: Offset(0, 3), // changes position of shadow
+                color: Color(0x10000000),
+                offset: Offset(0, 0),
+                blurRadius: 6,
+                spreadRadius: 1,
               ),
             ],
           ),
@@ -110,7 +120,7 @@ class MainBody extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: getProportionateScreenWidth(20),
+        horizontal: getProportionateScreenWidth(10),
         vertical: getProportionateScreenHeight(20),
       ),
       child: SafeArea(

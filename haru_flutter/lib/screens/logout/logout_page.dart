@@ -26,11 +26,11 @@ class LogoutPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               ClipOval(
-                  child: Image.network(_auth.image,
+                  child: Image.network(_auth.auth.currentUser.photoURL,
                       width: 100, height: 100, fit: BoxFit.cover)),
               SizedBox(height: 20),
               Text('Welcome,', textAlign: TextAlign.center),
-              Text(_auth.name,
+              Text(_auth.auth.currentUser.displayName,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
               SizedBox(height: 20),
