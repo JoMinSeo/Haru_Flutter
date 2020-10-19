@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:haru_flutter/constants/constants.dart';
-import 'package:haru_flutter/providers/firebase_login.dart';
+import 'package:haru_flutter/firebase_login.dart';
 import 'package:haru_flutter/screens/main/main_page.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
 

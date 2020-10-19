@@ -1,12 +1,10 @@
 import 'package:fab_circular_menu/fab_circular_menu.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:haru_flutter/constants/constants.dart';
 import 'package:haru_flutter/screens/add_schedule_page.dart';
 import 'package:haru_flutter/screens/logout/logout_page.dart';
 import 'package:haru_flutter/screens/main/main_body.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
-import 'package:provider/provider.dart';
 
 class MainPage extends StatelessWidget {
   final GlobalKey<FabCircularMenuState> fabKey = GlobalKey();
@@ -44,8 +42,8 @@ class MainPage extends StatelessWidget {
                   isScrollControlled: true,
                   builder: (context) => SingleChildScrollView(
                     child: Container(
-                      padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                      // padding: EdgeInsets.only(
+                      //     bottom: MediaQuery.of(context).viewInsets.bottom),
                       child: AddSchedulePage(),
                     ),
                   ),

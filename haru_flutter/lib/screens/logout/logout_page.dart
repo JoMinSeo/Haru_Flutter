@@ -1,8 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:haru_flutter/constants/constants.dart';
-import 'package:haru_flutter/providers/firebase_login.dart';
+import 'package:haru_flutter/firebase_login.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
 
 class LogoutPage extends StatelessWidget {

@@ -1,7 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:haru_flutter/providers/date_provider.dart';
-import 'package:haru_flutter/providers/firebase_login.dart';
+import 'package:haru_flutter/firebase_login.dart';
+import 'package:haru_flutter/providers/list_provider.dart';
 import 'package:haru_flutter/providers/selecdate_provider.dart';
 import 'package:haru_flutter/screens/Login/login_page.dart';
 import 'package:haru_flutter/screens/main/main_page.dart';
@@ -23,6 +24,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: SelectDateProvider(),
+        ),
+        ChangeNotifierProvider.value(
+          value: ListProvider(),
         ),
       ],
       child: MaterialApp(
@@ -49,28 +53,23 @@ class RoutePage extends StatefulWidget {
 }
 
 class _RoutePageState extends State<RoutePage> {
-
   FirebaseLogin _auth = FirebaseLogin();
 
   @override
   void initState() {
     super.initState();
     print("Init state");
-    _auth.autoLogin().then((value){
-      if(value == 'null')
-      {
+    _auth.autoLogin().then((value) {
+      if (value == 'null') {
         print(_auth.isUserSignedIn);
         setState(() {
           _auth.isUserSignedIn = false;
         });
-      }
-      else if(value !=null)
-      {
+      } else if (value != null) {
         setState(() {
           _auth.isUserSignedIn = true;
         });
-      }
-      else{
+      } else {
         setState(() {
           _auth.isUserSignedIn = false;
         });
@@ -83,4 +82,3 @@ class _RoutePageState extends State<RoutePage> {
     return _auth.isUserSignedIn == true ? MainPage() : LoginPage();
   }
 }
-
