@@ -19,5 +19,5 @@ class Schedule {
       : this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   @override
-  String toString() => "Schedule<$title:$content>";
+  String toString() => "Schedule<$title:$content:$time>";
 }

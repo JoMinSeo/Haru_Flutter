@@ -60,4 +60,14 @@ class ListProvider extends ChangeNotifier{
     print("fullTime : $_fullTime");
     notifyListeners();
   }
+
+  init(){
+    titleTextController.clear();
+    contentTextController.clear();
+    title = "비었습니다.";
+    content = "비었습니다.";
+    categoryIdx = 0;
+    date = "Not set";
+    time = "Not set";
+  }
 }

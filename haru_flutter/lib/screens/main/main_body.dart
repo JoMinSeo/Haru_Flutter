@@ -42,26 +42,30 @@ class MainBody extends StatelessWidget {
         itemCount: schedule.length,
         itemBuilder: (context, index) {
           if (index == 0) {
-            return bigListItem(context, snapshot[index]);
+            return bigListItem(context, snapshot[index], index);
           } else if (index == 1) {
-            return bigListItem(context, snapshot[index]);
+            return bigListItem(context, snapshot[index], index);
+          } else {
+            return smallListItem(context, snapshot[index], index);
           }
-          return smallListItem(context, snapshot[index]);
         },
       ),
     );
   }
 
-  Widget bigListItem(BuildContext context, DocumentSnapshot data) {
+  Widget bigListItem(BuildContext context, DocumentSnapshot data, int index) {
     final schedule = Schedule.fromSnapshot(data);
     DateTime dateTime = schedule.time.toDate();
+    String resultDate = DateFormat.jm().add_jm().format(dateTime);
     print("스케쥴 : $schedule");
     return InkWell(
       child: Container(
           height: getProportionateScreenHeight(120),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: schedule.category == 0 ? kPink : schedule.category == 1 ? kPurple : kYellow,
+            color: schedule.category == 0
+                ? kPink
+                : schedule.category == 1 ? kPurple : kYellow,
             boxShadow: [
               BoxShadow(
                 color: Color(0x10000000),
@@ -75,36 +79,54 @@ class MainBody extends StatelessWidget {
             padding: EdgeInsets.symmetric(
                 horizontal: getProportionateScreenWidth(20),
                 vertical: getProportionateScreenHeight(10)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  schedule.title,
-                  style: kMedium.copyWith(color: kWhite, fontSize: 20),
-                ),
-                Text(
-                  schedule.content,
-                  style: kMedium.copyWith(color: kWhite, fontSize: 12),
-                ),
-                SizedBox(
-                  height: getProportionateScreenHeight(6),
-                ),
-                Container(
-                  height: getProportionateScreenHeight(32),
-                  width: getProportionateScreenWidth(60),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: kWhite,
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: getProportionateScreenWidth(5),
-                        vertical: getProportionateScreenHeight(4)),
-                    child: Text(
-                      DateFormat.jm().add_jm().format(dateTime),
-                      textAlign: TextAlign.center,
-                      style: kMedium.copyWith(color: schedule.category == 0 ? kPink : schedule.category == 1 ? kPurple : kYellow, fontSize: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      schedule.title,
+                      style: kMedium.copyWith(color: kWhite, fontSize: 20),
                     ),
+                    Text(
+                      schedule.content,
+                      style: kMedium.copyWith(color: kWhite, fontSize: 12),
+                    ),
+                    SizedBox(
+                      height: getProportionateScreenHeight(6),
+                    ),
+                    Container(
+                      height: getProportionateScreenHeight(32),
+                      width: getProportionateScreenWidth(60),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: kWhite,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: getProportionateScreenWidth(5),
+                            vertical: getProportionateScreenHeight(4)),
+                        child: Text(
+                          resultDate,
+                          textAlign: TextAlign.center,
+                          style: kMedium.copyWith(
+                              color: schedule.category == 0
+                                  ? kPink
+                                  : schedule.category == 1 ? kPurple : kYellow,
+                              fontSize: 12),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                IconButton(
+                  onPressed: () {
+                    deleteData(index);
+                  },
+                  icon: Icon(
+                    Icons.delete,
+                    color: kWhite,
                   ),
                 )
               ],
@@ -113,25 +135,54 @@ class MainBody extends StatelessWidget {
     );
   }
 
-  Widget smallListItem(BuildContext context, DocumentSnapshot data) {
+  Widget smallListItem(BuildContext context, DocumentSnapshot data, int index) {
     final schedule = Schedule.fromSnapshot(data);
     print("스케쥴 : $schedule");
     return InkWell(
       child: Container(
-          height: getProportionateScreenHeight(50),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: kPurple,
-            boxShadow: [
-              BoxShadow(
-                color: Color(0x10000000),
-                offset: Offset(0, 0),
-                blurRadius: 6,
-                spreadRadius: 1,
+        height: getProportionateScreenHeight(56),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: schedule.category == 0
+              ? kPink
+              : schedule.category == 1 ? kPurple : kYellow,
+          boxShadow: [
+            BoxShadow(
+              color: Color(0x10000000),
+              offset: Offset(0, 0),
+              blurRadius: 6,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  vertical: getProportionateScreenHeight(10),
+                  horizontal: getProportionateScreenWidth(20)),
+              child: Text(
+                schedule.title,
+                style: kMedium.copyWith(color: kWhite, fontSize: 20),
               ),
-            ],
-          ),
-          child: Text("안녕하세요")),
+            ),
+            Padding(
+                padding:
+                    EdgeInsets.only(right: getProportionateScreenWidth(20)),
+                child: IconButton(
+                  onPressed: () {
+                    deleteData(index);
+                  },
+                  icon: Icon(
+                    Icons.delete,
+                    color: kWhite,
+                  ),
+                ))
+          ],
+        ),
+      ),
     );
   }
 
@@ -255,5 +306,12 @@ class MainBody extends StatelessWidget {
         print("이상한데 씨발");
         break;
     }
+  }
+
+  deleteData(int idx) async {
+    CollectionReference collectionReference =
+        FirebaseFirestore.instance.collection('schedule');
+    QuerySnapshot querySnapshot = await collectionReference.get();
+    querySnapshot.docs[idx].reference.delete();
   }
 }

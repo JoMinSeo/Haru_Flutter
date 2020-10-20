@@ -132,8 +132,8 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                         containerHeight: getProportionateScreenHeight(210),
                       ),
                       showTitleActions: true,
-                      minTime: DateTime(2000, 1, 1),
-                      maxTime: DateTime(2022, 12, 31), onConfirm: (date) {
+                      minTime: DateTime.now(),
+                      maxTime: DateTime(2025, 12, 31), onConfirm: (date) {
                     print('confirm $date');
                     listProvider.fullTime = date;
                     listProvider.date =
@@ -282,6 +282,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                   ),
                   onPressed: () {
                     addData();
+                    listProvider.init();
                     Navigator.pop(context);
                   },
                   child: Text(
