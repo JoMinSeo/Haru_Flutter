@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:haru_flutter/constants/constants.dart';
+import 'package:haru_flutter/firebase_login.dart';
+import 'package:haru_flutter/models/model_schedule.dart';
 import 'package:haru_flutter/providers/list_provider.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +18,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
   FocusNode titleFocusNode;
   FocusNode contentFocusNode;
   ListProvider listProvider;
+  final FirebaseLogin _auth = FirebaseLogin();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +42,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
               width: double.infinity,
               height: getProportionateScreenHeight(80),
               decoration: BoxDecoration(
-                  color: kPink,
+                  color: kYellow,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20.0),
                       topRight: Radius.circular(20.0))),
@@ -60,19 +64,25 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                 controller: listProvider.titleTextController,
                 textAlign: TextAlign.start,
                 focusNode: titleFocusNode,
+                onChanged: (text){
+                  listProvider.title = text;
+                },
                 decoration: InputDecoration(
                   hintText: "What's the matter?",
                   hintStyle: kMedium,
-                  focusColor: kRed,
+                  focusColor: kYellow,
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: kBlack),
                   ),
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: kPink),
+                    borderSide: BorderSide(color: kYellow),
                   ),
                   suffixIcon: IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.add_circle, color: kPink),
+                    onPressed: () {
+                      listProvider.title =
+                          listProvider.titleTextController.text;
+                    },
+                    icon: Icon(Icons.add_circle, color: kYellow),
                   ),
                 ),
               ),
@@ -87,6 +97,9 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                 controller: listProvider.contentTextController,
                 textAlign: TextAlign.start,
                 focusNode: contentFocusNode,
+                onChanged: (text){
+                  listProvider.content = text;
+                },
                 decoration: InputDecoration(
                   hintText: "What is the content?",
                   hintStyle: kMedium,
@@ -94,11 +107,14 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                     borderSide: BorderSide(color: kBlack),
                   ),
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: kPink),
+                    borderSide: BorderSide(color: kYellow),
                   ),
                   suffixIcon: IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.add_circle, color: kPink),
+                    onPressed: () {
+                      listProvider.content =
+                          listProvider.contentTextController.text;
+                    },
+                    icon: Icon(Icons.add_circle, color: kYellow),
                   ),
                 ),
               ),
@@ -119,8 +135,10 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                       minTime: DateTime(2000, 1, 1),
                       maxTime: DateTime(2022, 12, 31), onConfirm: (date) {
                     print('confirm $date');
+                    listProvider.fullTime = date;
                     listProvider.date =
-                        '${date.year} - ${date.month} - ${date.day}';
+                        '${date.year}-${date.month}-${date.day}';
+                    print(listProvider.date);
                     setState(() {});
                   }, currentTime: DateTime.now(), locale: LocaleType.ko);
                 },
@@ -138,7 +156,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                                 Icon(
                                   Icons.date_range,
                                   size: 20.0,
-                                  color: kPink,
+                                  color: kYellow,
                                 ),
                                 SizedBox(
                                   width: getProportionateScreenWidth(10),
@@ -146,7 +164,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                                 Text(
                                   " ${listProvider.date}",
                                   style: kMedium.copyWith(
-                                      color: kPink, fontSize: 18),
+                                      color: kYellow, fontSize: 18),
                                 ),
                               ],
                             ),
@@ -155,7 +173,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                       ),
                       Text(
                         "  Change",
-                        style: kMedium.copyWith(color: kPink, fontSize: 18),
+                        style: kMedium.copyWith(color: kYellow, fontSize: 18),
                       ),
                     ],
                   ),
@@ -180,8 +198,10 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                       ),
                       showTitleActions: true, onConfirm: (time) {
                     print('confirm $time');
+                    listProvider.fullTime = time;
                     listProvider.time =
-                        '${time.hour} : ${time.minute} : ${time.second}';
+                        '${time.hour}:${time.minute}:${time.second}';
+                    print(listProvider.time);
                     setState(() {});
                   }, currentTime: DateTime.now(), locale: LocaleType.en);
                   setState(() {});
@@ -200,14 +220,14 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                                 Icon(
                                   Icons.access_time,
                                   size: 20.0,
-                                  color: kPink,
+                                  color: kYellow,
                                 ),
                                 SizedBox(
                                   width: getProportionateScreenWidth(10),
                                 ),
                                 Text(" ${listProvider.time}",
                                     style: kMedium.copyWith(
-                                        color: kPink, fontSize: 18)),
+                                        color: kYellow, fontSize: 18)),
                               ],
                             ),
                           )
@@ -215,7 +235,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                       ),
                       Text(
                         "  Change",
-                        style: kMedium.copyWith(color: kPink, fontSize: 18),
+                        style: kMedium.copyWith(color: kYellow, fontSize: 18),
                       ),
                     ],
                   ),
@@ -261,6 +281,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   onPressed: () {
+                    addData();
                     Navigator.pop(context);
                   },
                   child: Text(
@@ -296,14 +317,28 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
     });
   }
 
+  addData() {
+    Map<String, dynamic> data = {
+      "UID": _auth.auth.currentUser.uid,
+      "category": listProvider.categoryIdx,
+      "content": listProvider.content,
+      "time": listProvider.fullTime,
+      "title": listProvider.title
+    };
+
+    CollectionReference collectionReference = FirebaseFirestore.instance.collection('schedule');
+    collectionReference.add(data);
+  }
+
   Widget customRadio(String txt, int index, Color color) {
     return SizedBox(
       height: getProportionateScreenHeight(55),
       child: OutlineButton(
         onPressed: () => listProvider.categoryIdx = index,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-        borderSide:
-            BorderSide(color: listProvider.categoryIdx == index ? color : kGrey),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        borderSide: BorderSide(
+            color: listProvider.categoryIdx == index ? color : kGrey),
         child: Text(txt, style: kMedium),
       ),
     );

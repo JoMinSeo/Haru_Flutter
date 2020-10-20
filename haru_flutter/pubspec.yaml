@@ -28,6 +28,7 @@ dependencies:
   shared_preferences: ^0.5.10
   rxdart: ^0.24.1
   flutter_datetime_picker: ^1.4.0
+  intl: ^0.16.1
 
 dev_dependencies:
   flutter_test:

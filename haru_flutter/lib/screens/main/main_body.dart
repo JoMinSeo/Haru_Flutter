@@ -6,6 +6,7 @@ import 'package:haru_flutter/providers/date_provider.dart';
 import 'package:haru_flutter/providers/selecdate_provider.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class MainBody extends StatelessWidget {
@@ -33,15 +34,19 @@ class MainBody extends StatelessWidget {
         snapshot.map((d) => Schedule.fromSnapshot(d)).toList();
     print("큰 스케쥴 $schedule");
     return Expanded(
-      child: ListView.builder(
+      child: ListView.separated(
+        separatorBuilder: (BuildContext context, int index) {
+          return SizedBox(height: (getProportionateScreenHeight(10)));
+        },
+        shrinkWrap: true,
         itemCount: schedule.length,
         itemBuilder: (context, index) {
           if (index == 0) {
             return bigListItem(context, snapshot[index]);
           } else if (index == 1) {
-            return Text("2");
+            return bigListItem(context, snapshot[index]);
           }
-          return Text("3");
+          return smallListItem(context, snapshot[index]);
         },
       ),
     );
@@ -49,13 +54,14 @@ class MainBody extends StatelessWidget {
 
   Widget bigListItem(BuildContext context, DocumentSnapshot data) {
     final schedule = Schedule.fromSnapshot(data);
+    DateTime dateTime = schedule.time.toDate();
     print("스케쥴 : $schedule");
     return InkWell(
       child: Container(
           height: getProportionateScreenHeight(120),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: kPurple,
+            color: schedule.category == 0 ? kPink : schedule.category == 1 ? kPurple : kYellow,
             boxShadow: [
               BoxShadow(
                 color: Color(0x10000000),
@@ -80,6 +86,27 @@ class MainBody extends StatelessWidget {
                   schedule.content,
                   style: kMedium.copyWith(color: kWhite, fontSize: 12),
                 ),
+                SizedBox(
+                  height: getProportionateScreenHeight(6),
+                ),
+                Container(
+                  height: getProportionateScreenHeight(32),
+                  width: getProportionateScreenWidth(60),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: kWhite,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: getProportionateScreenWidth(5),
+                        vertical: getProportionateScreenHeight(4)),
+                    child: Text(
+                      DateFormat.jm().add_jm().format(dateTime),
+                      textAlign: TextAlign.center,
+                      style: kMedium.copyWith(color: schedule.category == 0 ? kPink : schedule.category == 1 ? kPurple : kYellow, fontSize: 12),
+                    ),
+                  ),
+                )
               ],
             ),
           )),
@@ -93,7 +120,7 @@ class MainBody extends StatelessWidget {
       child: Container(
           height: getProportionateScreenHeight(50),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(10),
             color: kPurple,
             boxShadow: [
               BoxShadow(
@@ -104,7 +131,7 @@ class MainBody extends StatelessWidget {
               ),
             ],
           ),
-          child: Text(schedule.timestamp.toString())),
+          child: Text("안녕하세요")),
     );
   }
 
@@ -165,6 +192,7 @@ class MainBody extends StatelessWidget {
                 dayTextStyle: kMedium,
                 dateTextStyle: kMedium.copyWith(fontSize: 28),
                 onDateChange: (date) {
+                  print("하하: $date");
                   selectProvider.selectedValue = date;
                 },
               ),

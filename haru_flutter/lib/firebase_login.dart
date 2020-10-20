@@ -27,6 +27,12 @@ class FirebaseLogin{
     _status = val;
   }
 
+  String get uuid => _uuid;
+
+  set uuid(String uuid){
+    _uuid = uuid;
+  }
+
   FirebaseLogin() {
     user = auth.authStateChanges();
     print(user);
