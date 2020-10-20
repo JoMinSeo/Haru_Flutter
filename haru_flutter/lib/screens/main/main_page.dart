@@ -36,7 +36,6 @@ class MainPage extends StatelessWidget {
           children: <Widget>[
             RawMaterialButton(
               onPressed: () {
-                _showSnackBar(context, "You pressed 1");
                 showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,

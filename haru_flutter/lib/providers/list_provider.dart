@@ -7,6 +7,7 @@ class ListProvider extends ChangeNotifier{
 
   String _date = "Not set";
   String _time = "Not set";
+  int _categoryIdx = 0;
 
   String get date => _date;
 
@@ -19,6 +20,14 @@ class ListProvider extends ChangeNotifier{
 
   set time(String time){
     _time = time;
+    notifyListeners();
+  }
+
+  int get categoryIdx => _categoryIdx;
+
+  set categoryIdx(int idx){
+    _categoryIdx = idx;
+    print(categoryIdx);
     notifyListeners();
   }
 }
