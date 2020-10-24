@@ -20,7 +20,6 @@ class FirebaseLogin{
 
   bool isUserSignedIn = false;
 
-
   Status get status => _status;
 
   set status(Status val) {
@@ -80,12 +79,16 @@ class FirebaseLogin{
 
   login() async {
     var prefs = await SharedPreferences.getInstance();
+    isUserSignedIn = true;
+    print("login: $isUserSignedIn");
     prefs.setString('uid', _uuid);
   }
 
   logout() async {
     var prefs = await SharedPreferences.getInstance();
-    await prefs.remove('uid');
+    await prefs.clear();
+    isUserSignedIn = false;
+    print("logout : $isUserSignedIn");
     user = null;
   }
 

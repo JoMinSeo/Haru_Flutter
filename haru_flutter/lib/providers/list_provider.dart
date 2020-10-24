@@ -10,6 +10,7 @@ class ListProvider extends ChangeNotifier{
 
   String _date = "Not set";
   String _time = "Not set";
+  DateTime _compareTime;
   DateTime _fullTime;
   int _categoryIdx = 0;
 
@@ -58,6 +59,14 @@ class ListProvider extends ChangeNotifier{
   set fullTime(DateTime fullTime){
     _fullTime = fullTime;
     print("fullTime : $_fullTime");
+    notifyListeners();
+  }
+
+  DateTime get compareTime => _compareTime;
+
+  set compareTime(DateTime compareTime){
+    _compareTime = compareTime;
+    print("compareTime : $_compareTime");
     notifyListeners();
   }
 

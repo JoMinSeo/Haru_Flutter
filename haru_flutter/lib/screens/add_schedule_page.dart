@@ -5,7 +5,9 @@ import 'package:haru_flutter/constants/constants.dart';
 import 'package:haru_flutter/firebase_login.dart';
 import 'package:haru_flutter/models/model_schedule.dart';
 import 'package:haru_flutter/providers/list_provider.dart';
+import 'package:haru_flutter/providers/selecdate_provider.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
@@ -18,11 +20,13 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
   FocusNode titleFocusNode;
   FocusNode contentFocusNode;
   ListProvider listProvider;
+  SelectDateProvider selectDateProvider;
   final FirebaseLogin _auth = FirebaseLogin();
 
   @override
   Widget build(BuildContext context) {
     listProvider = Provider.of<ListProvider>(context);
+    selectDateProvider = Provider.of<SelectDateProvider>(context);
     List<String> list = ['Meeting', 'Work', 'Life'];
 
     return Container(
@@ -64,7 +68,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                 controller: listProvider.titleTextController,
                 textAlign: TextAlign.start,
                 focusNode: titleFocusNode,
-                onChanged: (text){
+                onChanged: (text) {
                   listProvider.title = text;
                 },
                 decoration: InputDecoration(
@@ -97,7 +101,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                 controller: listProvider.contentTextController,
                 textAlign: TextAlign.start,
                 focusNode: contentFocusNode,
-                onChanged: (text){
+                onChanged: (text) {
                   listProvider.content = text;
                 },
                 decoration: InputDecoration(
@@ -134,11 +138,11 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                       showTitleActions: true,
                       minTime: DateTime.now(),
                       maxTime: DateTime(2025, 12, 31), onConfirm: (date) {
-                    print('confirm $date');
+                    print('confirm1 $date');
                     listProvider.fullTime = date;
-                    listProvider.date =
-                        '${date.year}-${date.month}-${date.day}';
-                    print(listProvider.date);
+                    listProvider.compareTime =
+                        date;
+                    listProvider.date = DateFormat('yyyy-MM-dd').format(date);
                     setState(() {});
                   }, currentTime: DateTime.now(), locale: LocaleType.ko);
                 },
@@ -197,14 +201,10 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                         containerHeight: getProportionateScreenHeight(210),
                       ),
                       showTitleActions: true, onConfirm: (time) {
-                    print('confirm $time');
+                    print('confirm2 $time');
                     listProvider.fullTime = time;
-                    listProvider.time =
-                        '${time.hour}:${time.minute}:${time.second}';
-                    print(listProvider.time);
-                    setState(() {});
-                  }, currentTime: DateTime.now(), locale: LocaleType.en);
-                  setState(() {});
+                    listProvider.time = DateFormat('HH:mm:ss').format(time);
+                  }, currentTime: listProvider.fullTime, locale: LocaleType.en);
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -323,11 +323,13 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
       "UID": _auth.auth.currentUser.uid,
       "category": listProvider.categoryIdx,
       "content": listProvider.content,
-      "time": listProvider.fullTime,
-      "title": listProvider.title
+      "alarmTime": listProvider.fullTime,
+      "date": listProvider.compareTime,
+      "title": listProvider.title,
     };
 
-    CollectionReference collectionReference = FirebaseFirestore.instance.collection('schedule');
+    CollectionReference collectionReference =
+        FirebaseFirestore.instance.collection('schedule');
     collectionReference.add(data);
   }
 

@@ -29,6 +29,7 @@ dependencies:
   rxdart: ^0.24.1
   flutter_datetime_picker: ^1.4.0
   intl: ^0.16.1
+  firebase_messaging: ^7.0.3
 
 dev_dependencies:
   flutter_test:
