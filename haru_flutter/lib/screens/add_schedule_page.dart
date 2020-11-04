@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:haru_flutter/constants/constants.dart';
 import 'package:haru_flutter/firebase_login.dart';
-import 'package:haru_flutter/models/model_schedule.dart';
 import 'package:haru_flutter/providers/list_provider.dart';
 import 'package:haru_flutter/providers/selecdate_provider.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
