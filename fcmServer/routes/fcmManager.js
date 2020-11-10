@@ -2,10 +2,22 @@ var admin = require('firebase-admin');
 var firestore = require('@google-cloud/firestore');
 var serviceAccount = require('constants/privateKey.json');
 var topicName = 'industry-tech';
+var db = firebase.firestore();
+var docRef = db.collection("schedules");
  
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 })
+
+let getDocument = docRef.get().then(doc => {
+  if(!doc.exists) {
+    console.log('No such Documents!');
+  }else{
+    console.log('Document data:', doc.data());
+  }
+}).catch(err => {
+  console.log('Error getting document', err);
+});
 
 var message = {
   notification: {

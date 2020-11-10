@@ -2,6 +2,7 @@ import 'package:fab_circular_menu/fab_circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:haru_flutter/constants/constants.dart';
 import 'package:haru_flutter/screens/add_schedule_page.dart';
+import 'package:haru_flutter/screens/bug/bugreport_page.dart';
 import 'package:haru_flutter/screens/logout/logout_page.dart';
 import 'package:haru_flutter/screens/main/main_body.dart';
 import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
@@ -54,7 +55,7 @@ class MainPage extends StatelessWidget {
             ),
             RawMaterialButton(
               onPressed: () {
-                _showSnackBar(context, "You pressed 2");
+                Navigator.push(context, MaterialPageRoute(builder: (context) => BugReportPage()));
               },
               shape: CircleBorder(),
               padding: const EdgeInsets.all(24.0),
@@ -75,10 +76,10 @@ class MainPage extends StatelessWidget {
     );
   }
 
-  void _showSnackBar(BuildContext context, String message) {
-    Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text(message),
-      duration: const Duration(milliseconds: 1000),
-    ));
-  }
+  // void _showSnackBar(BuildContext context, String message) {
+  //   Scaffold.of(context).showSnackBar(SnackBar(
+  //     content: Text(message),
+  //     duration: const Duration(milliseconds: 1000),
+  //   ));
+  // }
 }
