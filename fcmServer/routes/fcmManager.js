@@ -1,23 +1,41 @@
 var admin = require('firebase-admin');
-var firestore = require('@google-cloud/firestore');
+var Firestore = require('@google-cloud/firestore');
 var serviceAccount = require('constants/privateKey.json');
-var topicName = 'industry-tech';
-var db = firebase.firestore();
-var docRef = db.collection("schedules");
- 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-})
+var schedule = require('node-schedule');
+var path = require('path');
 
-let getDocument = docRef.get().then(doc => {
-  if(!doc.exists) {
-    console.log('No such Documents!');
-  }else{
-    console.log('Document data:', doc.data());
+var topicName = 'industry-tech';
+let db = admin.firestore();
+ 
+function initializeApp(){
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+}
+
+class FcmManager {
+  constructor(){
+    this.firestore = new FireStore({
+      projectId: 'haru-ff3d2',
+      keyFilename: path.join(__dirname, './constants/service-account.json')
+    })
   }
-}).catch(err => {
-  console.log('Error getting document', err);
-});
+}
+
+function getDocument(db){
+  let docRef = db.collections('schedules');
+  let getDoc = docRef.get().then(doc => {
+    if(!doc.exists) {
+      console.log('No such Documents!');
+    }else{
+      console.log('Document data:', doc.data());
+    }
+  }).catch(err => {
+    console.log('Error getting document', err);
+  });
+
+  return getDoc;
+}
 
 var message = {
   notification: {
@@ -38,11 +56,20 @@ var message = {
   topic: topicName,
 };
 
-admin.messaging().send(message)
+var scheduler = schedule.scheduleJob('00 * * * *', function(){
+  
+  admin.messaging().send(message)
   .then((response) => {
+    getDocument(db);
     // Response is a message ID string.
     console.log('Successfully sent message:', response);
   })
   .catch((error) => {
     console.log('Error sending message:', error);
   });
+
+  console.log('알림을 정시에 보냈습니다.');
+})
+
+
+module.exports = new FcmManager();
