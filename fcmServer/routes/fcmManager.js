@@ -1,7 +1,6 @@
 var admin = require('firebase-admin');
 var Firestore = require('@google-cloud/firestore');
 var serviceAccount = require('constants/privateKey.json');
-var schedule = require('node-schedule');
 var path = require('path');
 
 var topicName = 'industry-tech';
@@ -55,21 +54,5 @@ var message = {
   },
   topic: topicName,
 };
-
-var scheduler = schedule.scheduleJob('00 * * * *', function(){
-  
-  admin.messaging().send(message)
-  .then((response) => {
-    getDocument(db);
-    // Response is a message ID string.
-    console.log('Successfully sent message:', response);
-  })
-  .catch((error) => {
-    console.log('Error sending message:', error);
-  });
-
-  console.log('알림을 정시에 보냈습니다.');
-})
-
 
 module.exports = new FcmManager();

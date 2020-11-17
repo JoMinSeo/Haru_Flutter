@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node index",
-    "dev" : "nodemon index"
+    "dev": "nodemon index"
   },
   "dependencies": {
+    "colors": "^1.4.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
