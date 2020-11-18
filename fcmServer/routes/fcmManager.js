@@ -1,18 +1,11 @@
 var admin = require('firebase-admin');
 var Firestore = require('@google-cloud/firestore');
-var serviceAccount = require('constants/privateKey.json');
 var path = require('path');
 
 var topicName = 'industry-tech';
 let db = admin.firestore();
- 
-function initializeApp(){
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
-}
 
-class FcmManager {
+export class FcmManager {
   constructor(){
     this.firestore = new FireStore({
       projectId: 'haru-ff3d2',
@@ -21,7 +14,7 @@ class FcmManager {
   }
 }
 
-function getDocument(db){
+export function getDocument(db){
   let docRef = db.collections('schedules');
   let getDoc = docRef.get().then(doc => {
     if(!doc.exists) {
@@ -36,9 +29,11 @@ function getDocument(db){
   return getDoc;
 }
 
-var message = {
+//firebase admin 메시지 코드
+const message = {
   notification: {
-    title: '자세한 내용 보기'
+    title: '자세한 내용 보기',
+    body: '',
   },
   android:{
     notification:{
