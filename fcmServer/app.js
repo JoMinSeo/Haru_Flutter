@@ -5,8 +5,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var admin = require("firebase-admin");
 
-
-
 const serviceAccount = require('./constants/privateKey.json');
 
 const app = express();
