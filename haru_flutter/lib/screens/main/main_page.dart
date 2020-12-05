@@ -59,7 +59,7 @@ class MainPage extends StatelessWidget {
               },
               shape: CircleBorder(),
               padding: const EdgeInsets.all(24.0),
-              child: Icon(Icons.delete, color: Colors.white),
+              child: Icon(Icons.bug_report, color: Colors.white),
             ),
             RawMaterialButton(
               onPressed: () {

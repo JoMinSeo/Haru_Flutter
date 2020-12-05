@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:haru_flutter/constants/constants.dart';
 import 'package:haru_flutter/firebase_login.dart';
@@ -8,6 +9,8 @@ import 'package:haru_flutter/services/sizes/Sizeconfig.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+
+final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
 class AddSchedulePage extends StatefulWidget {
   @override
@@ -134,7 +137,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                         containerHeight: getProportionateScreenHeight(210),
                       ),
                       showTitleActions: true,
-                      minTime: DateTime.now(),
+                      minTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0),
                       maxTime: DateTime(2025, 12, 31), onConfirm: (date) {
                     print('confirm1 $date');
                     listProvider.fullTime = date;
@@ -316,7 +319,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
     });
   }
 
-  addData() {
+  addData() async {
     Map<String, dynamic> data = {
       "UID": _auth.auth.currentUser.uid,
       "category": listProvider.categoryIdx,
@@ -324,6 +327,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
       "alarmTime": listProvider.fullTime,
       "date": listProvider.compareTime,
       "title": listProvider.title,
+      "token": await _firebaseMessaging.getToken(),
     };
 
     CollectionReference collectionReference =

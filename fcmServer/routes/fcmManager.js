@@ -1,20 +1,26 @@
-var admin = require('firebase-admin');
-let db = admin.firestore();
-
+const admin = require('firebase-admin');
+const firestore = admin.firestore();
 
 //firestore에서 db안에있는 일정데이터를 모두 가져오는 함수
-export default async() => {
+async function fcmManager() {
   var today = Date.now();
-  let docRef = db.collections('schedules').where('date', '==', today);
-  let getDoc = docRef.get().then(doc => {
-    if(!doc.exists) {
-      console.log('No such Documents!');
-    }else{
-      console.log('Document data:', doc.data());
+  var docRef = firestore.collections('schedule').where('date', '>=', today);
+  var tutorials = [];
+  await docRef.get().then((snapshot) => {
+    if(snapshot.empty){
+      console.log("데이터가 비었습니다.");
     }
-  }).catch(err => {
-    console.log('Error getting document', err);
+    snapshot.docs.forEach((childSnapshot) => {
+      var title = childSnapshot.title;
+      var content = childSnapshot.content;
+      var token = childSnapshot.token;
+
+      tutorials.push({ title: title, content: content, token: token });
+      console.log(tutorials);
+    });
   });
 
-  return getDoc;
+  return tutorials;
 }
+
+exports.fcmManager = fcmManager();

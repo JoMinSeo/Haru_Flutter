@@ -1,7 +1,12 @@
 const { HttpError } = require('http-errors');
 const app = require('./app');
 const http = require('http');
+const scheduler = require("./routes/scheduler");
 
-http.createServer(app).listen(8080, () => {
+const { PORT } = process.env;
+
+scheduler.schedulerfun;
+
+http.createServer(app).listen(PORT || 8080, () => {
     console.log('this server running on 8080');
 });

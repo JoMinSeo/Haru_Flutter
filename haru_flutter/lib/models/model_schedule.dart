@@ -7,6 +7,7 @@ class Schedule {
   final Timestamp date;
   final String uid;
   final int category;
+  final String token;
   final DocumentReference reference;
 
   Schedule.fromMap(Map<String, dynamic> map, {this.reference})
@@ -14,6 +15,7 @@ class Schedule {
         category = map['category'],
         content = map['content'],
         date = map['date'],
+        token = map['token'],
         alarmTime = map['alarmTime'],
         uid = map['uid'];
 
