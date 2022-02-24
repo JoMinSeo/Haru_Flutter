@@ -255,7 +255,6 @@ class _MainBodyState extends State<MainBody> {
             "December";
         break;
       default:
-        print("이상한데 씨발");
         break;
     }
   }
